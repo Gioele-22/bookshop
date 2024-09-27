@@ -1,0 +1,414 @@
+openapi: 3.0.3
+info:
+  title: BookShop
+  description: This is a training project
+  termsOfService: http://localhost:8080
+  contact:
+    email: gioele.stropeni@emeal.nttdata.com
+  version: version 1.0
+  
+tags:
+  - name: books
+    description: Everything about our books
+  - name: authors
+    description: Everything about our authors
+  - name: publishers
+    description: Everything about our publishers
+    
+paths:
+  /books:
+    get:
+      tags:
+        - books
+      summary: get all the books
+      description: get all the books on the catalog 
+      operationId: getAllBooks
+      responses:
+        '200':
+          description: operation success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book' 
+        '404':
+          description: the requested resource could not be found
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/ErrorResponse'
+        
+    post:
+      tags:
+       - books
+      summary: add a new book to the catalogue
+      operationId: addBook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookCreateRequest'
+      responses:
+        '201':
+          description: book successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'          
+        '400':
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/ErrorResponse'
+          
+  /books/{bookId}:
+    put:
+      tags:
+        - books
+      summary: update the number of available books by id
+      description: update the number of available books by id
+      operationId: updateAvailability
+      parameters:
+        - name: bookId
+          in: path
+          description: id of the book that need to be updated
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookCreateRequest'
+      responses:
+          '204':
+            description: book successfully updated
+          '400':
+            description: Invalid input
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorResponse'          
+
+    delete:
+      tags: 
+      - books
+      summary: deletes a book from the catalogue
+      description: delete a book
+      operationId: deleteBook
+      parameters:
+        - name: bookId
+          in: path
+          description: book id to be deleted
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: book successfully deleted
+        '400':
+          description: invalid input parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        
+  /authors:
+    get:
+      tags:
+        - authors
+      summary: get all the authors
+      description: get all the authors  
+      operationId: getAllAuthors
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Author' 
+        '404':
+          description: the requested resource could not be found
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/ErrorResponse'                  
+                  
+    post:
+      tags:
+        - authors
+      summary: add a new author
+      description: add a new author
+      operationId: addAuthor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthorCreateRequest'
+      responses:
+        '201':
+          description: author succesfully created
+        '400':
+          description: operation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'          
+          
+  /authors/{authorId}:
+    delete:
+      tags: 
+      - authors
+      summary: delete an athor
+      description: delete an author
+      operationId: deleteAuthor
+      parameters:
+        - name: authorId
+          in: path
+          description: authorId to be deleted
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204': 
+          description: author successfully deleted
+        '400':
+          description: operation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'          
+          
+  /publishers:
+    get:
+      tags:
+        - publishers
+      summary: get all publishers
+      description: get all publishers
+      operationId: getAllPublishers
+      responses:
+        '200':
+          description: successfull operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Publisher'
+        '404':
+          description: the requested resource could not be found
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/ErrorResponse'                  
+                  
+    post:
+      tags:
+        - publishers
+      summary: insert a new publisher
+      description: insert a new publisher
+      operationId: addPublisher
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PublisherCreateRequest'
+      responses:
+        '201':
+          description: publisher successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Publisher'
+        '400':
+          description: operation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'          
+          
+  /publishers/{publisherId}:
+    delete:
+      tags:
+        - publishers
+      summary: delete a publisher
+      description: delete a publisher
+      operationId: deletePublisher
+      parameters:
+        - name: publisherId
+          in: path
+          description: publisher id to be deleted
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: publisher successfully deleted
+        '400':
+          description: operation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'          
+          
+    put:
+      tags:
+        - publishers
+      summary: update a publisher address
+      description: update a publisher address
+      operationId: updatePublisher
+      parameters:
+        - name: publisherId
+          in: path
+          description: publisher Id to be deleted
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PublisherCreateRequest'
+      responses:
+        '204': 
+           description: publisher successfully updated
+        '400':
+          description: operation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'          
+        
+        
+components:
+  schemas:
+  
+    Book:
+      type: object
+      properties:
+        bookId:
+          type: integer
+          format: int64
+        title:
+          type: string
+        numberOfPages:
+          type: integer
+          format: int32
+        quantity:
+          type: integer
+          format: int32
+        authors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Author'
+        publisher:
+            $ref: '#/components/schemas/Publisher'
+      xml:
+        name: book
+        
+    Author:
+      type: object
+      properties:
+        authorId:
+          type: integer
+          format: int64
+        name:
+          type: string
+        surname:
+          type: string
+        birthdate:
+          type: string
+          format: date
+        books:
+          type: array
+          items: 
+            $ref: '#/components/schemas/Book'
+            
+    Publisher:
+      type: object
+      properties:
+        publisherId:
+          type: integer
+          format: int64
+        name:
+          type: string
+        address:
+          type: string
+        books:
+          type: array
+          items:
+            $ref: '#/components/schemas/Book'
+            
+    BookCreateRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        numberOfPages:
+          type: integer
+          format: int32
+        quantity:
+          type: integer
+          format: int32
+      required:
+        - title
+        - numberOfPages
+        - quantity
+          
+    AuthorCreateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        surname:
+          type: string
+        birthdate:
+          type: string
+          format: date
+      required:
+        - name
+        - surname
+        - birthdate
+        
+    PublisherCreateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        address:
+          type: string
+      required:
+        - name
+        - address
+        
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          description: HTTP status code
+          example: 400
+        error:
+          type: string
+          description: Short description of the error
+          example: "Bad Request"
